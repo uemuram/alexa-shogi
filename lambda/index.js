@@ -2,13 +2,31 @@
 // Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
+const AWS = require('aws-sdk');
+const lambda = new AWS.Lambda();
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
-    handle(handlerInput) {
-        const speakOutput = 'Welcome, you can say Hello or Help. Which would you like to try?';
+    async handle(handlerInput) {
+        const speakOutput = 'こんにちは';
+
+        let payload = {
+            "moves": [
+                "7g7f",
+                "8c8d"
+            ]
+        };
+        payload = JSON.stringify(payload);
+        let params = {
+            FunctionName: "ask-shogi-engine",
+            InvocationType: "RequestResponse",
+            Payload: payload
+        }
+        let callLambda = await lambda.invoke(params).promise();
+        console.log(callLambda);
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
@@ -113,8 +131,8 @@ exports.handler = Alexa.SkillBuilders.custom()
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
         IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
-        ) 
+    )
     .addErrorHandlers(
         ErrorHandler,
-        )
+    )
     .lambda();
