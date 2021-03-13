@@ -2,7 +2,7 @@
   "manifest": {
     "publishingInformation": {
       "locales": {
-        "en-US": {
+        "ja-JP": {
           "summary": "Sample Short Description",
           "examplePhrases": [
             "Alexa open hello world",
@@ -13,13 +13,19 @@
           "description": "Sample Full Description"
         }
       },
-      "isAvailableWorldwide": true,
+      "isAvailableWorldwide": false,
       "testingInstructions": "Sample Testing Instructions.",
       "category": "KNOWLEDGE_AND_TRIVIA",
-      "distributionCountries": []
+      "distributionCountries": [
+        "JP"
+      ]
     },
     "apis": {
-      "custom": {}
+      "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:ap-northeast-1:704229799072:function:ask-shogi-default-skillStack-16-AlexaSkillFunction-AGR4PJ3R3EIG"
+        }
+      }
     },
     "manifestVersion": "1.0"
   }
