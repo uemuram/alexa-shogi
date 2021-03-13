@@ -5,27 +5,36 @@ const Alexa = require('ask-sdk-core');
 const AWS = require('aws-sdk');
 const lambda = new AWS.Lambda();
 
+const CommonUtil = require('./CommonUtil.js');
+const util = new CommonUtil();
+
+const Logic = require('./Logic.js');
+const logic = new Logic();
+
+const Constant = require('./Constant');
+const c = new Constant();
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     async handle(handlerInput) {
-        const speakOutput = 'こんにちは';
+        const speakOutput = 'ようこそ';
 
-        let payload = {
-            "moves": [
-                "7g7f",
-                "8c8d"
-            ]
-        };
-        payload = JSON.stringify(payload);
-        let params = {
-            FunctionName: "ask-shogi-engine",
-            InvocationType: "RequestResponse",
-            Payload: payload
-        }
-        let callLambda = await lambda.invoke(params).promise();
-        console.log(callLambda);
+        // let payload = {
+        //     "moves": [
+        //         "7g7f",
+        //         "8c8d"
+        //     ]
+        // };
+        // payload = JSON.stringify(payload);
+        // let params = {
+        //     FunctionName: "ask-shogi-engine",
+        //     InvocationType: "RequestResponse",
+        //     Payload: payload
+        // }
+        // let callLambda = await lambda.invoke(params).promise();
+        // console.log(callLambda);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -46,6 +55,50 @@ const HelloWorldIntentHandler = {
             .getResponse();
     }
 };
+// 対局開始
+const GameStartIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (util.checkStrictSlotMatch(handlerInput, 'GameStartIntent', 'GameStartOrder'));
+    },
+    async handle(handlerInput) {
+        const speakOutput = '対局開始です。';
+
+        // TODO 盤面をセッションに記録
+        // TODO 盤面をDynamoDBに記録
+
+        // TODO 先手の場合の処理
+        // TODO 後手の場合の処理
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+
+// プレイヤーの差し手を受け付ける
+const MakeMoveIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MakeMoveIntent';
+    },
+    async handle(handlerInput) {
+        const speakOutput = '指しましたね。';
+
+        // TODO 可能な手か、反則手じゃないかをチェック
+        // TODO 決着がついているかをチェック
+        // TODO ひとつに定まらない手じゃないかをチェック(成る成らずとか)
+
+        // TODO コンピュータに手を考えさせる
+        await util.callDirectiveService(handlerInput, 'あいうえおかきくけこ');
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -127,6 +180,8 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         HelloWorldIntentHandler,
+        GameStartIntentHandler,
+        MakeMoveIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
@@ -135,4 +190,5 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addErrorHandlers(
         ErrorHandler,
     )
+    .withApiClient(new Alexa.DefaultApiClient())
     .lambda();

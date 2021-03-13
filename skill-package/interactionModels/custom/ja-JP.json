@@ -4,6 +4,25 @@
             "invocationName": "ボイス将棋",
             "intents": [
                 {
+                    "name": "GameStartIntent",
+                    "slots": [
+                        {
+                            "name": "GameStartOrder",
+                            "type": "GAME_START_ORDER"
+                        }
+                    ],
+                    "samples": [
+                        " {GameStartOrder} "
+                    ]
+                },
+                {
+                    "name": "MakeMoveIntent",
+                    "slots": [],
+                    "samples": [
+                        "はちろくふ"
+                    ]
+                },
+                {
                     "name": "AMAZON.CancelIntent",
                     "samples": []
                 },
@@ -27,7 +46,24 @@
                     "samples": []
                 }
             ],
-            "types": []
+            "types": [
+                {
+                    "name": "GAME_START_ORDER",
+                    "values": [
+                        {
+                            "id": "order",
+                            "name": {
+                                "value": "対局開始",
+                                "synonyms": [
+                                    "対局スタート",
+                                    "ゲーム開始",
+                                    "ゲームスタート"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     }
   }

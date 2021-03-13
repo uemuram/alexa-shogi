@@ -169,6 +169,28 @@ class CommonUtil {
         return value;
     }
 
+    // プログレッシブ応答(重い処理が完了する前に先行して返す応答)を呼ぶ
+    // 使い方 : await util.callDirectiveService(handlerInput, '応答メッセージ');
+    // exports.handler に .withApiClient(new Alexa.DefaultApiClient())を追加する必要あり
+    callDirectiveService(handlerInput, message) {
+        // Call Alexa Directive Service.
+        const requestEnvelope = handlerInput.requestEnvelope;
+        const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
+        const requestId = requestEnvelope.request.requestId;
+        // build the progressive response directive
+        const directive = {
+            header: {
+                requestId,
+            },
+            directive: {
+                type: 'VoicePlayer.Speak',
+                speech: `${message}`,
+            },
+        };
+        // send directive
+        return directiveServiceClient.enqueue(directive);
+    }
+
 }
 
 module.exports = CommonUtil;
