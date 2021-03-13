@@ -83,14 +83,31 @@ const MakeMoveIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MakeMoveIntent';
     },
     async handle(handlerInput) {
-        const speakOutput = '指しましたね。';
+        const speakOutput = '後手、まるまる飛車。';
 
         // TODO 可能な手か、反則手じゃないかをチェック
         // TODO 決着がついているかをチェック
         // TODO ひとつに定まらない手じゃないかをチェック(成る成らずとか)
 
         // TODO コンピュータに手を考えさせる
-        await util.callDirectiveService(handlerInput, 'あいうえおかきくけこ');
+        await util.callDirectiveService(handlerInput, 'はちろくふですね。私の手番です。');
+        console.log('テスト');
+
+        let payload = {
+            "moves": [
+                "7g7f",
+                "8c8d"
+            ]
+        };
+        payload = JSON.stringify(payload);
+        let params = {
+            FunctionName: "ask-shogi-engine",
+            InvocationType: "RequestResponse",
+            Payload: payload
+        }
+        console.log('テスト2');
+        let callLambda = await lambda.invoke(params).promise();
+        console.log(callLambda);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)

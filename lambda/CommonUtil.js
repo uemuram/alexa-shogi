@@ -173,7 +173,7 @@ class CommonUtil {
     // 使い方 : await util.callDirectiveService(handlerInput, '応答メッセージ');
     // exports.handler に .withApiClient(new Alexa.DefaultApiClient())を追加する必要あり
     callDirectiveService(handlerInput, message) {
-        // Call Alexa Directive Service.
+        console.log(`プログレッシブ応答 : ${message}`);
         const requestEnvelope = handlerInput.requestEnvelope;
         const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
         const requestId = requestEnvelope.request.requestId;
