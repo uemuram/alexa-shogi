@@ -9,6 +9,47 @@ const c = new Constant();
 
 class Logic {
 
+    // 初期化された局面を取得する
+    getInitialPhase(firstPlayer) {
+        return {
+            // 盤面
+            board: util.deepCopy(c.initialBoard),
+            // 持ち駒
+            ownPiece: {
+                // 先手番
+                'first': util.deepCopy(c.initialOwnPiece),
+                // 後手番
+                'second': util.deepCopy(c.initialOwnPiece)
+            },
+            // 履歴
+            history: [],
+            // 先手、後手
+            firstPlayer: firstPlayer
+        }
+    }
+
+    // 局面をログ表示する
+    logPhase(phase) {
+        let boardStr = '\n';
+        for (let i = 0; i < phase.board.length; i++) {
+            for (let j = 0; j < phase.board[i].length; j++) {
+                if (!phase.board[i][j]) {
+                    boardStr += '  ';
+                } else if (phase.board[i][j].length == 1) {
+                    boardStr += ` ${phase.board[i][j]}`;
+                } else {
+                    boardStr += phase.board[i][j];
+                }
+            }
+            boardStr += '\n';
+        }
+        console.log(boardStr);
+        // TODO 集約して1ログで表示
+        console.log(phase.ownPiece);
+        console.log(phase.history);
+        console.log(phase.firstPlayer);
+    }
+
     // スキル内商品の情報を取得する
     async getProductInfo(handlerInput) {
         const ms = handlerInput.serviceClientFactory.getMonetizationServiceClient();

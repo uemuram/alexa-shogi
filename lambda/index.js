@@ -64,9 +64,15 @@ const GameStartIntentHandler = {
     async handle(handlerInput) {
         const speakOutput = '対局開始です。';
 
-        
         // TODO 盤面をセッションに記録
         // TODO 盤面をDynamoDBに記録
+
+
+        // 先手後手を決める
+        const firstPlayer = util.random(2) == 0 ? c.PLAYER_USER : c.PLAYER_ALEXA;
+        // 盤面の初期化
+        let phase = logic.getInitialPhase(firstPlayer);
+        logic.logPhase(phase);
 
         // TODO 先手の場合の処理
         // TODO 後手の場合の処理
@@ -192,6 +198,16 @@ const ErrorHandler = {
     }
 };
 
+// リクエストインターセプター(エラー調査用)
+const RequestLog = {
+    process(handlerInput) {
+        //console.log("REQUEST ENVELOPE = " + JSON.stringify(handlerInput.requestEnvelope));
+        console.log("HANDLER INPUT = " + JSON.stringify(handlerInput));
+        console.log("REQUEST TYPE =  " + Alexa.getRequestType(handlerInput.requestEnvelope));
+        return;
+    }
+};
+
 // The SkillBuilder acts as the entry point for your skill, routing all request and response
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
 // defined are included below. The order matters - they're processed top to bottom.
@@ -210,4 +226,5 @@ exports.handler = Alexa.SkillBuilders.custom()
         ErrorHandler,
     )
     .withApiClient(new Alexa.DefaultApiClient())
+    .addRequestInterceptors(RequestLog)
     .lambda();
