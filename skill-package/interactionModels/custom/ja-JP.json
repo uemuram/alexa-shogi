@@ -16,7 +16,7 @@
                     ]
                 },
                 {
-                    "name": "MakeMoveIntent",
+                    "name": "MoveIntent",
                     "slots": [],
                     "samples": [
                         "はちろくふ"

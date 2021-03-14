@@ -64,6 +64,7 @@ const GameStartIntentHandler = {
     async handle(handlerInput) {
         const speakOutput = '対局開始です。';
 
+        
         // TODO 盤面をセッションに記録
         // TODO 盤面をDynamoDBに記録
 
@@ -77,14 +78,15 @@ const GameStartIntentHandler = {
 };
 
 // プレイヤーの差し手を受け付ける
-const MakeMoveIntentHandler = {
+const MoveIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MakeMoveIntent';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MoveIntent';
     },
     async handle(handlerInput) {
         const speakOutput = '後手、まるまる飛車。';
 
+        // TODO プレイヤーの手番かをチェック
         // TODO 可能な手か、反則手じゃないかをチェック
         // TODO 決着がついているかをチェック
         // TODO ひとつに定まらない手じゃないかをチェック(成る成らずとか)
@@ -198,7 +200,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         HelloWorldIntentHandler,
         GameStartIntentHandler,
-        MakeMoveIntentHandler,
+        MoveIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
