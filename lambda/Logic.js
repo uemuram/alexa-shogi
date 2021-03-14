@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const lambda = new AWS.Lambda();
 const Alexa = require('ask-sdk-core');
 
 const CommonUtil = require('./CommonUtil.js');
@@ -23,14 +24,14 @@ class Logic {
             },
             // 履歴
             history: [],
-            // 先手、後手
+            // どちらのプレイヤー先手か
             firstPlayer: firstPlayer
         }
     }
 
     // 局面をログ表示する
     logPhase(phase) {
-        let boardStr = '\n';
+        let boardStr = '\n'; phase
         for (let i = 0; i < phase.board.length; i++) {
             for (let j = 0; j < phase.board[i].length; j++) {
                 if (!phase.board[i][j]) {
@@ -48,6 +49,23 @@ class Logic {
         console.log(phase.ownPiece);
         console.log(phase.history);
         console.log(phase.firstPlayer);
+    }
+
+    // 次の1手をエンジンに考えさせる
+    async getNextMoveFromEngine(phase) {
+        // 今までの指し手
+        const payload = JSON.stringify({
+            "moves": phase.history
+        });
+        const params = {
+            FunctionName: "ask-shogi-engine",
+            InvocationType: "RequestResponse",
+            Payload: payload
+        }
+        let result = await lambda.invoke(params).promise();
+        console.log(`エンジン呼び出し結果 : ${JSON.stringify(result)}`);
+        const nextMove = JSON.parse(JSON.parse(result.Payload).body).bestmove;;
+        return nextMove;
     }
 
     // スキル内商品の情報を取得する

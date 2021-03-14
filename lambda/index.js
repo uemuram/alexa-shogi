@@ -3,7 +3,7 @@
 // session persistence, api calls, and more.
 const Alexa = require('ask-sdk-core');
 const AWS = require('aws-sdk');
-const lambda = new AWS.Lambda();
+// const lambda = new AWS.Lambda();
 
 const CommonUtil = require('./CommonUtil.js');
 const util = new CommonUtil();
@@ -21,20 +21,6 @@ const LaunchRequestHandler = {
     async handle(handlerInput) {
         const speakOutput = 'ようこそ';
 
-        // let payload = {
-        //     "moves": [
-        //         "7g7f",
-        //         "8c8d"
-        //     ]
-        // };
-        // payload = JSON.stringify(payload);
-        // let params = {
-        //     FunctionName: "ask-shogi-engine",
-        //     InvocationType: "RequestResponse",
-        //     Payload: payload
-        // }
-        // let callLambda = await lambda.invoke(params).promise();
-        // console.log(callLambda);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -55,6 +41,7 @@ const HelloWorldIntentHandler = {
             .getResponse();
     }
 };
+
 // 対局開始
 const GameStartIntentHandler = {
     canHandle(handlerInput) {
@@ -74,8 +61,11 @@ const GameStartIntentHandler = {
         let phase = logic.getInitialPhase(firstPlayer);
         logic.logPhase(phase);
 
-        // TODO 先手の場合の処理
-        // TODO 後手の場合の処理
+        // TODO Alexaが先手の場合 → Alexaに手を考えさせる
+        let nextMove = await logic.getNextMoveFromEngine(phase);
+        console.log(`次の手(エンジン) : ${nextMove}`);
+
+        // TODO ユーザが先手の場合 → ユーザに手を考えさせる
         return handlerInput.responseBuilder
             .speak(speakOutput)
             //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
@@ -100,22 +90,6 @@ const MoveIntentHandler = {
         // TODO コンピュータに手を考えさせる
         await util.callDirectiveService(handlerInput, 'はちろくふですね。私の手番です。');
         console.log('テスト');
-
-        let payload = {
-            "moves": [
-                "7g7f",
-                "8c8d"
-            ]
-        };
-        payload = JSON.stringify(payload);
-        let params = {
-            FunctionName: "ask-shogi-engine",
-            InvocationType: "RequestResponse",
-            Payload: payload
-        }
-        console.log('テスト2');
-        let callLambda = await lambda.invoke(params).promise();
-        console.log(callLambda);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
