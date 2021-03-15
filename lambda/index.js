@@ -49,11 +49,9 @@ const GameStartIntentHandler = {
             && (util.checkStrictSlotMatch(handlerInput, 'GameStartIntent', 'GameStartOrder'));
     },
     async handle(handlerInput) {
-        const speakOutput = '対局開始です。';
 
         // TODO 盤面をセッションに記録
         // TODO 盤面をDynamoDBに記録
-
 
         // 先手後手を決める
         const firstPlayer = util.random(2) == 0 ? c.PLAYER_USER : c.PLAYER_ALEXA;
@@ -61,13 +59,20 @@ const GameStartIntentHandler = {
         let phase = logic.getInitialPhase(firstPlayer);
         logic.logPhase(phase);
 
-        // TODO Alexaが先手の場合 → Alexaに手を考えさせる
+        // ユーザーが先手の場合 : ユーザに手を考えさせる
+        if (firstPlayer == c.PLAYER_USER) {
+            return handlerInput.responseBuilder
+            .speak('あなたの先手ばんで対局を開始します。どうぞ。')
+            .getResponse();
+        }
+
+        // Alexaが先手の場合 : Alexaに手を考えさせた後、ユーザに手を考えさせる
+        await util.callDirectiveService(handlerInput, '私の先手ばんで対局を開始します。あなたは後手ばんです。');
         let nextMove = await logic.getNextMoveFromEngine(phase);
         console.log(`次の手(エンジン) : ${nextMove}`);
 
-        // TODO ユーザが先手の場合 → ユーザに手を考えさせる
         return handlerInput.responseBuilder
-            .speak(speakOutput)
+            .speak(`先手、${nextMove}。あなたの手ばんです。`)
             //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
             .getResponse();
     }
