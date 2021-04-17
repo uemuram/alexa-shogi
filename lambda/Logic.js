@@ -58,7 +58,7 @@ class Logic {
             "moves": phase.history
         });
         const params = {
-            FunctionName: "ask-shogi-engine",
+            FunctionName: "ask-shogi-engine2",
             InvocationType: "RequestResponse",
             Payload: payload
         }
