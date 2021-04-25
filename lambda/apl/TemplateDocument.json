@@ -1,0 +1,79 @@
+{
+    "type": "APL",
+    "version": "1.6",
+    "settings": {},
+    "theme": "dark",
+    "import": [],
+    "resources": [],
+    "styles": {},
+    "onMount": [],
+    "graphics": {},
+    "commands": {},
+    "layouts": {},
+    "mainTemplate": {
+        "parameters": [
+            "payload"
+        ],
+        "items": [
+            {
+                "type": "Container",
+                "width": "100%",
+                "height": "100%",
+                "paddingTop": "100dp",
+                "items": [
+                    {
+                        "type": "TouchWrapper",
+                        "onPress": [
+                            {
+                                "type": "SpeakItem",
+                                "componentId": "speechText"
+                            }
+                        ],
+                        "items": [
+                            {
+                                "type": "Container",
+                                "direction": "row",
+                                "items": [
+                                    {
+                                        "type": "Text",
+                                        "speech": "${payload.sample.properties.text}",
+                                        "id": "speechText",
+                                        "text": "読み上げテスト",
+                                        "fontSize": "10vw"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "Frame",
+                        "item": {
+                            "type": "TouchWrapper",
+                            "onPress": [
+                                {
+                                    "type": "SendEvent",
+                                    "arguments": [
+                                        "button"
+                                    ]
+                                }
+                            ],
+                            "items": [
+                                {
+                                    "type": "Text",
+                                    "width": "30vw",
+                                    "height": "20vh",
+                                    "textAlign": "center",
+                                    "textAlignVertical": "center",
+                                    "text": "Button"
+                                }
+                            ]
+                        },
+                        "backgroundColor": "#006600",
+                        "borderColor": "#00ff00",
+                        "borderWidth": "4"
+                    }
+                ]
+            }
+        ]
+    }
+}

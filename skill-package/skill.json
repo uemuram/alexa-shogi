@@ -24,7 +24,12 @@
       "custom": {
         "endpoint": {
           "uri": "arn:aws:lambda:ap-northeast-1:704229799072:function:ask-shogi-default-skillStack-16-AlexaSkillFunction-AGR4PJ3R3EIG"
-        }
+        },
+        "interfaces": [
+          {
+            "type": "ALEXA_PRESENTATION_APL"
+          }
+        ]
       }
     },
     "manifestVersion": "1.0"

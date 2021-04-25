@@ -1,0 +1,13 @@
+{
+    "sample": {
+        "properties": {
+            "text": "テストです"
+        },
+        "transformers": [
+            {
+                "inputPath": "text",
+                "transformer": "textToSpeech"
+            }
+        ]
+    }
+}

@@ -21,11 +21,22 @@ const LaunchRequestHandler = {
     async handle(handlerInput) {
         const speakOutput = 'ようこそ';
 
+        const aplDocument = require('./apl/TemplateDocument.json');
+        const aplDataSource = require('./apl/TemplateDataSource.json');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .addDirective({
+                type: 'Alexa.Presentation.APL.RenderDocument',
+                document: aplDocument,
+                datasources: aplDataSource
+            })
             .getResponse();
+
+        // return handlerInput.responseBuilder
+        //     .speak(speakOutput)
+        //     .reprompt(speakOutput)
+        //     .getResponse();
     }
 };
 const HelloWorldIntentHandler = {
@@ -62,8 +73,8 @@ const GameStartIntentHandler = {
         // ユーザーが先手の場合 : ユーザに手を考えさせる
         if (firstPlayer == c.PLAYER_USER) {
             return handlerInput.responseBuilder
-            .speak('あなたの先手ばんで対局を開始します。どうぞ。')
-            .getResponse();
+                .speak('あなたの先手ばんで対局を開始します。どうぞ。')
+                .getResponse();
         }
 
         // Alexaが先手の場合 : Alexaに手を考えさせた後、ユーザに手を考えさせる
@@ -102,6 +113,30 @@ const MoveIntentHandler = {
             .getResponse();
     }
 };
+
+// sendEventテスト
+const TouchEventHandler = {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        return ((request.type === 'Alexa.Presentation.APL.UserEvent' &&
+        (request.source.handler === 'Press' || request.source.handler === 'onPress')));
+    },
+    handle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        if (request.type === 'Alexa.Presentation.APL.UserEvent') {
+            if (request.arguments) {
+                // request.arguments[0]には、"button"が入っている
+                const speechText = `${request.arguments[0]} がタップされました。`
+                return handlerInput.responseBuilder
+                    .speak(speechText)
+                    .withShouldEndSession(true)
+                    .getResponse();            
+            }
+        }
+        throw new Error("error");
+    }
+};
+
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
@@ -196,6 +231,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         HelloWorldIntentHandler,
         GameStartIntentHandler,
         MoveIntentHandler,
+        TouchEventHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
