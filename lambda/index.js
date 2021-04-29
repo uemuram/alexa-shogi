@@ -22,26 +22,13 @@ const LaunchRequestHandler = {
         const speakOutput = 'ようこそ';
 
         const aplDocument = require('./apl/TemplateDocument.json');
-        const aplDataSource = require('./apl/TemplateDataSource.json');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .addDirective({
                 type: 'Alexa.Presentation.APL.RenderDocument',
                 token: 'token',
-                document: aplDocument,
-                datasources: aplDataSource
-            })
-            .addDirective({
-                type: 'Alexa.Presentation.APL.ExecuteCommands',
-                token: 'token',
-                commands: [
-                    {
-                        type: 'Idle',
-                        delay: 500,
-                        screenLock: true
-                    }
-                ]
+                document: aplDocument
             })
             .addDirective({
                 type: 'Alexa.Presentation.APL.ExecuteCommands',
@@ -55,11 +42,6 @@ const LaunchRequestHandler = {
                 ]
             })
             .getResponse();
-
-        // return handlerInput.responseBuilder
-        //     .speak(speakOutput)
-        //     .reprompt(speakOutput)
-        //     .getResponse();
     }
 };
 const HelloWorldIntentHandler = {
@@ -164,24 +146,15 @@ const PageChangedEventHandler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         return ((request.type === 'Alexa.Presentation.APL.UserEvent' &&
-            (request.source.handler === 'Page' )));
+            (request.source.handler === 'Page')));
     },
     handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        if (request.type === 'Alexa.Presentation.APL.UserEvent') {
-            if (request.arguments) {
-                // request.arguments[0]には、"button"が入っている
-                const speechText = `${request.arguments[0]} がページングされました。`
-                return handlerInput.responseBuilder
-                    .speak(speechText)
-                    .withShouldEndSession(true)
-                    .getResponse();
-            }
-        }
-        throw new Error("error");
+        const speechText = `ページングされました。`
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .getResponse();
     }
 };
-
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
