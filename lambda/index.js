@@ -28,8 +28,31 @@ const LaunchRequestHandler = {
             .speak(speakOutput)
             .addDirective({
                 type: 'Alexa.Presentation.APL.RenderDocument',
+                token: 'token',
                 document: aplDocument,
                 datasources: aplDataSource
+            })
+            .addDirective({
+                type: 'Alexa.Presentation.APL.ExecuteCommands',
+                token: 'token',
+                commands: [
+                    {
+                        type: 'Idle',
+                        delay: 500,
+                        screenLock: true
+                    }
+                ]
+            })
+            .addDirective({
+                type: 'Alexa.Presentation.APL.ExecuteCommands',
+                token: 'token',
+                commands: [
+                    {
+                        type: 'SetPage',
+                        componentId: 'pager01',
+                        value: 1
+                    }
+                ]
             })
             .getResponse();
 
@@ -119,7 +142,7 @@ const TouchEventHandler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         return ((request.type === 'Alexa.Presentation.APL.UserEvent' &&
-        (request.source.handler === 'Press' || request.source.handler === 'onPress')));
+            (request.source.handler === 'Press' || request.source.handler === 'onPress')));
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -130,7 +153,29 @@ const TouchEventHandler = {
                 return handlerInput.responseBuilder
                     .speak(speechText)
                     .withShouldEndSession(true)
-                    .getResponse();            
+                    .getResponse();
+            }
+        }
+        throw new Error("error");
+    }
+};
+
+const PageChangedEventHandler = {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        return ((request.type === 'Alexa.Presentation.APL.UserEvent' &&
+            (request.source.handler === 'Page' )));
+    },
+    handle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        if (request.type === 'Alexa.Presentation.APL.UserEvent') {
+            if (request.arguments) {
+                // request.arguments[0]には、"button"が入っている
+                const speechText = `${request.arguments[0]} がページングされました。`
+                return handlerInput.responseBuilder
+                    .speak(speechText)
+                    .withShouldEndSession(true)
+                    .getResponse();
             }
         }
         throw new Error("error");
@@ -232,6 +277,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         GameStartIntentHandler,
         MoveIntentHandler,
         TouchEventHandler,
+        PageChangedEventHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,

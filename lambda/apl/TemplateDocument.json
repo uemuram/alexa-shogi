@@ -71,6 +71,29 @@
                         "backgroundColor": "#006600",
                         "borderColor": "#00ff00",
                         "borderWidth": "4"
+                    },
+                    {
+                        "type": "Pager",
+                        "id"  :"pager01",
+                        "onPageChanged":[
+                            {
+                                "type": "SendEvent",
+                                "arguments": [
+                                    "test"
+                                ]
+                            }
+                        ],
+                        "width": "100%",
+                        "items": [
+                            {
+                                "type": "Text",
+                                "text": "ページ#1で表示されるテキストコンテンツ"
+                            },
+                            {
+                                "type": "Text",
+                                "text": "ページ#2で表示されるテキストコンテンツ"
+                            }
+                        ]
                     }
                 ]
             }
