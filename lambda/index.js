@@ -30,14 +30,26 @@ const LaunchRequestHandler = {
                 token: 'token',
                 document: aplDocument
             })
+            // .addDirective({
+            //     type: 'Alexa.Presentation.APL.ExecuteCommands',
+            //     token: 'token',
+            //     commands: [
+            //         {
+            //             type: 'SetPage',
+            //             componentId: 'pager01',
+            //             value: 1
+            //         }
+            //     ]
+            // })
             .addDirective({
                 type: 'Alexa.Presentation.APL.ExecuteCommands',
                 token: 'token',
                 commands: [
                     {
-                        type: 'SetPage',
-                        componentId: 'pager01',
-                        value: 1
+                        type: 'SendEvent',
+                        "arguments": [
+                            "test2"
+                        ]
                     }
                 ]
             })
@@ -123,8 +135,8 @@ const MoveIntentHandler = {
 const TouchEventHandler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return ((request.type === 'Alexa.Presentation.APL.UserEvent' &&
-            (request.source.handler === 'Press' || request.source.handler === 'onPress')));
+        return (request.type === 'Alexa.Presentation.APL.UserEvent' &&
+            request.source.handler === 'External');
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
