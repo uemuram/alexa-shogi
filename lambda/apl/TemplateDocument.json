@@ -75,14 +75,6 @@
                     {
                         "type": "Pager",
                         "id"  :"pager01",
-                        "onPageChanged":[
-                            {
-                                "type": "SendEvent",
-                                "arguments": [
-                                    "test"
-                                ]
-                            }
-                        ],
                         "width": "100%",
                         "items": [
                             {
