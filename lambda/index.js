@@ -48,6 +48,40 @@ const LaunchRequestHandler = {
                 token: 'token',
                 commands: [
                     {
+                        type: "AnimateItem",
+                        easing: "linear",
+                        duration: 1500,
+                        repeatCount: 0,
+                        repeatMode: "restart",
+                        componentId: "speechText2",
+                        // componentId: "frame1",
+                        value: [
+                            {
+                                property: "opacity",
+                                to: 1
+                            },
+                            {
+                                property: "transform",
+                                from: [
+                                    { rotate: 0 },
+                                    { translateX: 0 },
+                                    { scale: 1.0 }
+                                ],
+                                to: [
+                                    { rotate: 20 },
+                                    { translateX: 100 },
+                                    { scale: 0.5 }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            })
+            .addDirective({
+                type: 'Alexa.Presentation.APL.ExecuteCommands',
+                token: 'token',
+                commands: [
+                    {
                         type: 'SendEvent',
                         "arguments": [
                             "test2"
@@ -55,6 +89,9 @@ const LaunchRequestHandler = {
                     }
                 ]
             })
+
+
+
             .getResponse();
 
         // return handlerInput.responseBuilder

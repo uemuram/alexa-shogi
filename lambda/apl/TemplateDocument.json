@@ -22,6 +22,21 @@
                 "paddingTop": "100dp",
                 "items": [
                     {
+                        "type": "Frame",
+                        "id": "frame1",
+                        "height": "25vh",
+                        "item": {
+                            "type": "Text",
+                            "id": "speechText2",
+                            "paddingTop": "10",
+                            "paddingRight": "20",
+                            "text": "アニメーションテスト",
+                            "fontSize": "5vw"
+                        },
+                        "borderColor": "white",
+                        "borderWidth": "1"
+                    },
+                    {
                         "type": "TouchWrapper",
                         "onPress": [
                             {
@@ -47,34 +62,36 @@
                     },
                     {
                         "type": "Frame",
-                        "item": {
-                            "type": "TouchWrapper",
-                            "onPress": [
-                                {
-                                    "type": "SendEvent",
-                                    "arguments": [
-                                        "button"
-                                    ]
-                                }
-                            ],
-                            "items": [
-                                {
-                                    "type": "Text",
-                                    "width": "30vw",
-                                    "height": "20vh",
-                                    "textAlign": "center",
-                                    "textAlignVertical": "center",
-                                    "text": "Button"
-                                }
-                            ]
-                        },
+                        "item": [
+                            {
+                                "type": "TouchWrapper",
+                                "onPress": [
+                                    {
+                                        "type": "SendEvent",
+                                        "arguments": [
+                                            "button"
+                                        ]
+                                    }
+                                ],
+                                "items": [
+                                    {
+                                        "type": "Text",
+                                        "width": "30vw",
+                                        "height": "20vh",
+                                        "textAlign": "center",
+                                        "textAlignVertical": "center",
+                                        "text": "Button"
+                                    }
+                                ]
+                            }
+                        ],
                         "backgroundColor": "#006600",
                         "borderColor": "#00ff00",
                         "borderWidth": "4"
                     },
                     {
                         "type": "Pager",
-                        "id"  :"pager01",
+                        "id": "pager01",
                         "width": "100%",
                         "items": [
                             {
