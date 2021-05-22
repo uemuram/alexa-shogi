@@ -53,8 +53,8 @@ const LaunchRequestHandler = {
                         duration: 1500,
                         repeatCount: 0,
                         repeatMode: "restart",
-                        componentId: "speechText2",
-                        // componentId: "frame1",
+                        // componentId: "speechText2",
+                        componentId: "frame1",
                         value: [
                             {
                                 property: "opacity",
@@ -69,7 +69,7 @@ const LaunchRequestHandler = {
                                 ],
                                 to: [
                                     { rotate: 20 },
-                                    { translateX: 100 },
+                                    { translateX: 100, translateY: 50 },
                                     { scale: 0.5 }
                                 ]
                             }
