@@ -38,7 +38,7 @@
                     "name": "HelloWorldIntent",
                     "slots": [],
                     "samples": [
-                        "こんにちは"
+                        "表示テスト"
                     ]
                 },
                 {

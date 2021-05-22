@@ -19,13 +19,14 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     async handle(handlerInput) {
-        const speakOutput = 'ようこそ';
+        const speakOutput = 'ようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそ';
 
         const aplDocument = require('./apl/TemplateDocument.json');
         const aplDataSource = require('./apl/TemplateDataSource.json');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
+            // .reprompt(speakOutput)
             .addDirective({
                 type: 'Alexa.Presentation.APL.RenderDocument',
                 token: 'token',
@@ -77,27 +78,20 @@ const LaunchRequestHandler = {
                     }
                 ]
             })
-            .addDirective({
-                type: 'Alexa.Presentation.APL.ExecuteCommands',
-                token: 'token',
-                commands: [
-                    {
-                        type: 'SendEvent',
-                        "arguments": [
-                            "test2"
-                        ]
-                    }
-                ]
-            })
-
-
-
+            // .addDirective({
+            //     type: 'Alexa.Presentation.APL.ExecuteCommands',
+            //     token: 'token',
+            //     commands: [
+            //         {
+            //             type: 'SendEvent',
+            //             "arguments": [
+            //                 "test2"
+            //             ]
+            //         }
+            //     ]
+            // })
             .getResponse();
 
-        // return handlerInput.responseBuilder
-        //     .speak(speakOutput)
-        //     .reprompt(speakOutput)
-        //     .getResponse();
     }
 };
 const HelloWorldIntentHandler = {
@@ -106,10 +100,78 @@ const HelloWorldIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Hello World!';
+        const speakOutput = 'はろー';
+
+        const aplDocument = require('./apl/TemplateDocument.json');
+        const aplDataSource = require('./apl/TemplateDataSource.json');
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .reprompt(speakOutput)
+            // .addDirective({
+            //     type: 'Alexa.Presentation.APL.RenderDocument',
+            //     token: 'token',
+            //     document: aplDocument,
+            //     datasources: aplDataSource
+            // })
+            // .addDirective({
+            //     type: 'Alexa.Presentation.APL.ExecuteCommands',
+            //     token: 'token',
+            //     commands: [
+            //         {
+            //             type: 'Idle',
+            //             delay: 500,
+            //             screenLock: true
+            //         }
+            //     ]
+            // })
+            // こんな感じでコマンドだけ送るのも可
+            .addDirective({
+                type: 'Alexa.Presentation.APL.ExecuteCommands',
+                token: 'token',
+                commands: [
+                    {
+                        type: "AnimateItem",
+                        easing: "linear",
+                        duration: 1500,
+                        repeatCount: 0,
+                        repeatMode: "restart",
+                        // componentId: "speechText2",
+                        componentId: "frame1",
+                        value: [
+                            {
+                                property: "opacity",
+                                to: 1
+                            },
+                            {
+                                property: "transform",
+                                from: [
+                                    { rotate: 0 },
+                                    { translateX: 0 },
+                                    { scale: 1.0 }
+                                ],
+                                to: [
+                                    { rotate: 40 },
+                                    { translateX: 200, translateY: -50 },
+                                    { scale: 0.8 }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            })
+            // .addDirective({
+            //     type: 'Alexa.Presentation.APL.ExecuteCommands',
+            //     token: 'token',
+            //     commands: [
+            //         {
+            //             type: 'SendEvent',
+            //             "arguments": [
+            //                 "test2"
+            //             ]
+            //         }
+            //     ]
+            // })
             .getResponse();
     }
 };
