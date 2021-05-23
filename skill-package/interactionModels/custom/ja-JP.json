@@ -23,6 +23,20 @@
                     ]
                 },
                 {
+                    "name": "TestOneIntent",
+                    "slots": [],
+                    "samples": [
+                        "てすといち"
+                    ]
+                },
+                {
+                    "name": "TestTwoIntent",
+                    "slots": [],
+                    "samples": [
+                        "てすとに"
+                    ]
+                },
+                {
                     "name": "AMAZON.CancelIntent",
                     "samples": []
                 },

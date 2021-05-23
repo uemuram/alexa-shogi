@@ -165,6 +165,16 @@ class CommonUtil {
         return directiveServiceClient.enqueue(directive);
     }
 
+    // 指定した秒数(ミリ秒)待つ
+    // await util.sleep(3000); で3秒待つ
+    sleep(miliSec) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve()
+            }, miliSec)
+        })
+    }
+
 }
 
 module.exports = CommonUtil;

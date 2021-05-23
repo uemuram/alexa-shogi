@@ -8,6 +8,8 @@ const util = new CommonUtil();
 const Constant = require('./Constant');
 const c = new Constant();
 
+const uuid = require('node-uuid');
+
 class Logic {
 
     // 初期化された局面を取得する
@@ -54,19 +56,107 @@ class Logic {
     // 次の1手をエンジンに考えさせる
     async getNextMoveFromEngine(phase) {
         // 今までの指し手
-        const payload = JSON.stringify({
-            "moves": phase.history
-        });
+        // const payload = JSON.stringify({
+        //     "mode": "search",
+        //     "moves": phase.history
+        // });
+        // const params = {
+        //     FunctionName: "ask-shogi-engine2",
+        //     InvocationType: "RequestResponse",
+        //     Payload: payload
+        // }
+
         const params = {
             FunctionName: "ask-shogi-engine2",
             InvocationType: "RequestResponse",
-            Payload: payload
+            Payload: JSON.stringify({
+                "mode": "search",
+                "moves": phase.history
+            })
         }
+
+
         let result = await lambda.invoke(params).promise();
         console.log(`エンジン呼び出し結果 : ${JSON.stringify(result)}`);
-        const nextMove = JSON.parse(JSON.parse(result.Payload).body).bestmove;;
+        const nextMove = JSON.parse(JSON.parse(result.Payload).body).bestmove;
         return nextMove;
     }
+
+    // 次の1手の検索を開始する
+    startSearchNextMove(handlerInput, phase) {
+        // 検索用のキーを生成
+        const key = uuid.v4();
+        console.log(`key : ${key}`);
+        util.setSessionValue(handlerInput, 'searchKey', key);
+
+        // const payload = JSON.stringify({
+        //     "mode": "search",
+        //     "moves": phase.history,
+        //     "key": key
+        // });
+
+        // レスポンスを使わないため、InvocationType : eventで呼び出し
+        const params = {
+            FunctionName: "ask-shogi-engine2",
+            InvocationType: "Event",
+            Payload: JSON.stringify({
+                "mode": "search",
+                "moves": phase.history,
+                "key": key
+            })
+        }
+
+        // 検索開始(結果は取得しない)
+        lambda.invoke(params, (err, data) => {
+            console.log(`done. err : ${JSON.stringify(err)}`);
+            console.log(`done. data : ${JSON.stringify(data)}`);
+        });
+    }
+
+    // 予約済みの次の1手を取得する
+    async getNextMoveFromKey(handlerInput) {
+        // 検索用のキーを取得
+        const key = util.getSessionValue(handlerInput, 'searchKey');
+        if (!key) {
+            // キーが取得できない場合はエラー
+            throw new Error('search key is not exist');
+        }
+
+        // 
+        const params = {
+            FunctionName: "ask-shogi-engine2",
+            InvocationType: "RequestResponse",
+            Payload: JSON.stringify({
+                "mode": "load",
+                "key": key
+            })
+        }
+
+        // リトライ回数
+        const maxCount = 5;
+        let count = 0;
+        let nextMove;
+        let success = false;
+        do {
+            let result = await lambda.invoke(params).promise();
+            count++;
+            console.log(`result(${count}) :  ${JSON.stringify(result)}`);
+
+            nextMove = JSON.parse(JSON.parse(result.Payload).body).bestmove;
+            if (nextMove) {
+                success = true;
+                break;
+            }
+            await util.sleep(1000);
+        } while (count < maxCount);
+
+        if (success) {
+            return nextMove;
+        } else {
+            throw new Error('次の手取得エラー');
+        }
+    }
+
 
     // スキル内商品の情報を取得する
     async getProductInfo(handlerInput) {

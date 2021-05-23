@@ -19,14 +19,14 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     async handle(handlerInput) {
-        const speakOutput = 'ようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそようこそ';
+        const speakOutput = 'ようこそ';
 
         const aplDocument = require('./apl/TemplateDocument.json');
         const aplDataSource = require('./apl/TemplateDataSource.json');
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            // .reprompt(speakOutput)
+            .reprompt(speakOutput)
             .addDirective({
                 type: 'Alexa.Presentation.APL.RenderDocument',
                 token: 'token',
@@ -193,6 +193,10 @@ const GameStartIntentHandler = {
         let phase = logic.getInitialPhase(firstPlayer);
         logic.logPhase(phase);
 
+        // TODO 消す 思考予約テスト
+        logic.startSearchNextMove(null, phase);
+        console.log("xxx");
+
         // ユーザーが先手の場合 : ユーザに手を考えさせる
         if (firstPlayer == c.PLAYER_USER) {
             return handlerInput.responseBuilder
@@ -200,9 +204,12 @@ const GameStartIntentHandler = {
                 .getResponse();
         }
 
+
+
         // Alexaが先手の場合 : Alexaに手を考えさせた後、ユーザに手を考えさせる
-        await util.callDirectiveService(handlerInput, '私の先手ばんで対局を開始します。あなたは後手ばんです。');
-        let nextMove = await logic.getNextMoveFromEngine(phase);
+        // await util.callDirectiveService(handlerInput, '私の先手ばんで対局を開始します。あなたは後手ばんです。');
+        // let nextMove = await logic.getNextMoveFromEngine(phase);
+        let nextMove = 'abcd';
         console.log(`次の手(エンジン) : ${nextMove}`);
 
         return handlerInput.responseBuilder
@@ -236,6 +243,46 @@ const MoveIntentHandler = {
             .getResponse();
     }
 };
+
+// テスト用
+const TestOneIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'TestOneIntent';
+    },
+    async handle(handlerInput) {
+        // 先手後手を決める
+        const firstPlayer = util.random(2) == 0 ? c.PLAYER_USER : c.PLAYER_ALEXA;
+        // 盤面の初期化
+        let phase = logic.getInitialPhase(firstPlayer);
+        logic.logPhase(phase);
+        // 思考予約テスト
+        logic.startSearchNextMove(handlerInput, phase);
+
+        return handlerInput.responseBuilder
+            .speak(`テストいちです`)
+            .reprompt('テストいちです')
+            .getResponse();
+    }
+};
+
+// テスト用
+const TestTwoIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'TestTwoIntent';
+    },
+    async handle(handlerInput) {
+        const nextMove = await logic.getNextMoveFromKey(handlerInput);
+        console.log(nextMove);
+
+        return handlerInput.responseBuilder
+            .speak(`テストにです`)
+            .reprompt('テストにです')
+            .getResponse();
+    }
+};
+
 
 // sendEventテスト
 const TouchEventHandler = {
@@ -373,7 +420,11 @@ const RequestLog = {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
+
         HelloWorldIntentHandler,
+        TestOneIntentHandler,
+        TestTwoIntentHandler,
+
         GameStartIntentHandler,
         MoveIntentHandler,
         TouchEventHandler,
