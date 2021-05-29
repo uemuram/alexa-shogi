@@ -165,6 +165,11 @@ class CommonUtil {
         return directiveServiceClient.enqueue(directive);
     }
 
+    // APL利用可能か判定する
+    isAvailableAPL(handlerInput) {
+        return Alexa.getSupportedInterfaces(handlerInput.requestEnvelope)['Alexa.Presentation.APL'];
+    }
+
     // 指定した秒数(ミリ秒)待つ
     // await util.sleep(3000); で3秒待つ
     sleep(miliSec) {
