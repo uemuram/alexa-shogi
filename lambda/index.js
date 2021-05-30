@@ -19,81 +19,19 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     async handle(handlerInput) {
-        const speakOutput = 'ようこそ';
+        // TODO 途中の対局があるかによって条件分岐
 
-        const aplDocument = require('./apl/TemplateDocument.json');
-        const aplDataSource = require('./apl/TemplateDataSource.json');
-
+        // TODO 文言整備
+        const speakOutput = 'ようこそ。新しい対局を始めますか?';
+        const repromptOutput = '新しい対局を始めますか?';
+        util.setState(handlerInput, c.CONFIRM_START_NEWGAME);
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
-            .addDirective({
-                type: 'Alexa.Presentation.APL.RenderDocument',
-                token: 'token',
-                document: aplDocument,
-                datasources: aplDataSource
-            })
-            .addDirective({
-                type: 'Alexa.Presentation.APL.ExecuteCommands',
-                token: 'token',
-                commands: [
-                    {
-                        type: 'Idle',
-                        delay: 500,
-                        screenLock: true
-                    }
-                ]
-            })
-            .addDirective({
-                type: 'Alexa.Presentation.APL.ExecuteCommands',
-                token: 'token',
-                commands: [
-                    {
-                        type: "AnimateItem",
-                        easing: "linear",
-                        duration: 1500,
-                        repeatCount: 0,
-                        repeatMode: "restart",
-                        // componentId: "speechText2",
-                        componentId: "frame1",
-                        value: [
-                            {
-                                property: "opacity",
-                                to: 1
-                            },
-                            {
-                                property: "transform",
-                                from: [
-                                    { rotate: 0 },
-                                    { translateX: 0 },
-                                    { scale: 1.0 }
-                                ],
-                                to: [
-                                    { rotate: 20 },
-                                    { translateX: 100, translateY: 50 },
-                                    { scale: 0.5 }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            })
-            // .addDirective({
-            //     type: 'Alexa.Presentation.APL.ExecuteCommands',
-            //     token: 'token',
-            //     commands: [
-            //         {
-            //             type: 'SendEvent',
-            //             "arguments": [
-            //                 "test2"
-            //             ]
-            //         }
-            //     ]
-            // })
+            .reprompt(repromptOutput)
             .getResponse();
-
     }
 };
+
 const HelloWorldIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -179,8 +117,8 @@ const HelloWorldIntentHandler = {
 // 対局開始
 const GameStartIntentHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && (util.checkStrictSlotMatch(handlerInput, 'GameStartIntent', 'GameStartOrder'));
+        return util.checkStrictSlotMatch(handlerInput, 'GameStartIntent', 'GameStartOrder')
+            || util.checkIntentAndStateMatch(handlerInput, 'AMAZON.YesIntent', c.CONFIRM_START_NEWGAME);
     },
     async handle(handlerInput) {
 
@@ -194,7 +132,7 @@ const GameStartIntentHandler = {
         logic.logPhase(phase);
 
         // TODO 消す 思考予約テスト
-        logic.startSearchNextMove(null, phase);
+        logic.startSearchNextMove(handlerInput, phase);
         console.log("xxx");
 
         // ユーザーが先手の場合 : ユーザに手を考えさせる
@@ -408,6 +346,7 @@ const ErrorHandler = {
 const RequestLog = {
     process(handlerInput) {
         //console.log("REQUEST ENVELOPE = " + JSON.stringify(handlerInput.requestEnvelope));
+        console.log('---------------------------------------------------------------------');
         console.log("HANDLER INPUT = " + JSON.stringify(handlerInput));
         console.log("REQUEST TYPE =  " + Alexa.getRequestType(handlerInput.requestEnvelope));
         return;

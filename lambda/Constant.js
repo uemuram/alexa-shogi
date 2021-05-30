@@ -2,13 +2,17 @@ class Constant {
 
     constructor() {
         // ステータス
-        this.TIMER_RUNNING = 0;     // タイマー実行中
-        this.TIMER_STOPPING = 1;    // タイマー停止中
-        this.CONFIRM_PURCHASE = 2;  // 購入確認中
-        this.UNDER_PURCHASE = 3;    // 購入処理中
-        this.UNDER_REFUND = 4; // タイマー実行確認中
-        this.CONFIRM_RUN_TIMER = 5; // タイマー実行確認中
-        this.SKILL_END = 6;         // スキル終了
+        // this.TIMER_RUNNING = 0;     // タイマー実行中
+        // this.TIMER_STOPPING = 1;    // タイマー停止中
+        // this.CONFIRM_PURCHASE = 2;  // 購入確認中
+        // this.UNDER_PURCHASE = 3;    // 購入処理中
+        // this.UNDER_REFUND = 4; // タイマー実行確認中
+        // this.CONFIRM_RUN_TIMER = 5; // タイマー実行確認中
+        // this.SKILL_END = 6;         // スキル終了
+
+        this.CONFIRM_START_NEWGAME = 0;     // 新規ゲーム開始確認中
+
+        
 
         // プレイヤー区分
         this.PLAYER_USER = 0;   // プレイヤー
