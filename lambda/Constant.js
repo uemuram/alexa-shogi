@@ -11,8 +11,9 @@ class Constant {
         // this.SKILL_END = 6;         // スキル終了
 
         this.CONFIRM_START_NEWGAME = 0;     // 新規ゲーム開始確認中
+        this.REQUEST_USER_MOVE = 1;         // ユーザ差し手受付中
+        this.REQUEST_ALEXA_MOVE = 2;        // Alexa差し手受付中
 
-        
 
         // プレイヤー区分
         this.PLAYER_USER = 0;   // プレイヤー

@@ -14,11 +14,14 @@ const logic = new Logic();
 const Constant = require('./Constant');
 const c = new Constant();
 
+const Phase = require('./Phase');
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     async handle(handlerInput) {
+
         // TODO 途中の対局があるかによって条件分岐
 
         // TODO 文言整備
@@ -125,35 +128,31 @@ const GameStartIntentHandler = {
         // TODO 盤面をセッションに記録
         // TODO 盤面をDynamoDBに記録
 
-        // 先手後手を決める
-        const firstPlayer = util.random(2) == 0 ? c.PLAYER_USER : c.PLAYER_ALEXA;
         // 盤面の初期化
-        let phase = logic.getInitialPhase(firstPlayer);
-        logic.logPhase(phase);
+        let phase = new Phase();
+        phase.log();
 
-        // TODO 消す 思考予約テスト
-        logic.startSearchNextMove(handlerInput, phase);
-        console.log("xxx");
+        // 先手後手の分岐
+        if (phase.isFirstPlayerUser()) {
+            // ユーザが先手の場合
 
-        // ユーザーが先手の場合 : ユーザに手を考えさせる
-        if (firstPlayer == c.PLAYER_USER) {
+            // ユーザに手の発話を促す
+            util.setState(handlerInput, c.REQUEST_USER_MOVE);
             return handlerInput.responseBuilder
                 .speak('あなたの先手ばんで対局を開始します。どうぞ。')
                 .getResponse();
+        } else {
+            // Alexaが後手の場合
+
+            // Alexaの思考を予約する
+            logic.startSearchNextMove(handlerInput, phase);
+
+            // Alexaに手の検討を促す(リダイレクト)
+            util.setState(handlerInput, c.REQUEST_ALEXA_MOVE);
+            return handlerInput.responseBuilder
+                .speak('Alexaの先手ばんで対局を開始します。')
+                .getResponse();
         }
-
-
-
-        // Alexaが先手の場合 : Alexaに手を考えさせた後、ユーザに手を考えさせる
-        // await util.callDirectiveService(handlerInput, '私の先手ばんで対局を開始します。あなたは後手ばんです。');
-        // let nextMove = await logic.getNextMoveFromEngine(phase);
-        let nextMove = 'abcd';
-        console.log(`次の手(エンジン) : ${nextMove}`);
-
-        return handlerInput.responseBuilder
-            .speak(`先手、${nextMove}。あなたの手ばんです。`)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-            .getResponse();
     }
 };
 
@@ -189,13 +188,13 @@ const TestOneIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'TestOneIntent';
     },
     async handle(handlerInput) {
-        // 先手後手を決める
-        const firstPlayer = util.random(2) == 0 ? c.PLAYER_USER : c.PLAYER_ALEXA;
-        // 盤面の初期化
-        let phase = logic.getInitialPhase(firstPlayer);
-        logic.logPhase(phase);
-        // 思考予約テスト
-        logic.startSearchNextMove(handlerInput, phase);
+        // // 先手後手を決める
+        // const firstPlayer = util.random(2) == 0 ? c.PLAYER_USER : c.PLAYER_ALEXA;
+        // // 盤面の初期化
+        // let phase = logic.getInitialPhase(firstPlayer);
+        // // logic.logPhase(phase);
+        // // 思考予約テスト
+        // logic.startSearchNextMove(handlerInput, phase);
 
         return handlerInput.responseBuilder
             .speak(`テストいちです`)
@@ -211,8 +210,8 @@ const TestTwoIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'TestTwoIntent';
     },
     async handle(handlerInput) {
-        const nextMove = await logic.getNextMoveFromKey(handlerInput);
-        console.log(nextMove);
+        // const nextMove = await logic.getNextMoveFromKey(handlerInput);
+        // console.log(nextMove);
 
         return handlerInput.responseBuilder
             .speak(`テストにです`)
@@ -348,7 +347,10 @@ const RequestLog = {
         //console.log("REQUEST ENVELOPE = " + JSON.stringify(handlerInput.requestEnvelope));
         console.log('---------------------------------------------------------------------');
         console.log("HANDLER INPUT = " + JSON.stringify(handlerInput));
-        console.log("REQUEST TYPE =  " + Alexa.getRequestType(handlerInput.requestEnvelope));
+        console.log("REQUEST TYPE = " + Alexa.getRequestType(handlerInput.requestEnvelope));
+        if (Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest') {
+            console.log("REQUEST NAME = " + Alexa.getIntentName(handlerInput.requestEnvelope));
+        }
         return;
     }
 };

@@ -12,47 +12,6 @@ const uuid = require('node-uuid');
 
 class Logic {
 
-    // 初期化された局面を取得する
-    getInitialPhase(firstPlayer) {
-        return {
-            // 盤面
-            board: util.deepCopy(c.initialBoard),
-            // 持ち駒
-            ownPiece: {
-                // 先手番
-                'first': util.deepCopy(c.initialOwnPiece),
-                // 後手番
-                'second': util.deepCopy(c.initialOwnPiece)
-            },
-            // 履歴
-            history: [],
-            // どちらのプレイヤー先手か
-            firstPlayer: firstPlayer
-        }
-    }
-
-    // 局面をログ表示する
-    logPhase(phase) {
-        let boardStr = '\n'; phase
-        for (let i = 0; i < phase.board.length; i++) {
-            for (let j = 0; j < phase.board[i].length; j++) {
-                if (!phase.board[i][j]) {
-                    boardStr += '  ';
-                } else if (phase.board[i][j].length == 1) {
-                    boardStr += ` ${phase.board[i][j]}`;
-                } else {
-                    boardStr += phase.board[i][j];
-                }
-            }
-            boardStr += '\n';
-        }
-        console.log(boardStr);
-        // TODO 集約して1ログで表示
-        console.log(phase.ownPiece);
-        console.log(phase.history);
-        console.log(phase.firstPlayer);
-    }
-
     // 次の1手をエンジンに考えさせる
     async getNextMoveFromEngine(phase) {
         // 今までの指し手
@@ -88,12 +47,6 @@ class Logic {
         const key = uuid.v4();
         console.log(`key : ${key}`);
         util.setSessionValue(handlerInput, 'searchKey', key);
-
-        // const payload = JSON.stringify({
-        //     "mode": "search",
-        //     "moves": phase.history,
-        //     "key": key
-        // });
 
         // レスポンスを使わないため、InvocationType : eventで呼び出し
         const params = {
