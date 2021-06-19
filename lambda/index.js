@@ -181,6 +181,21 @@ const MoveIntentHandler = {
     }
 };
 
+
+// スキル終了
+// 終了
+const FinishIntentHandler = {
+    canHandle(handlerInput) {
+        return util.checkIntentAndStateMatch(handlerInput, 'AMAZON.NoIntent', c.CONFIRM_START_NEWGAME);
+    },
+    handle(handlerInput) {
+        const speakOutput = 'ご利用ありがとうございました。';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .getResponse();
+    }
+};
+
 // テスト用
 const TestOneIntentHandler = {
     canHandle(handlerInput) {
@@ -368,6 +383,7 @@ exports.handler = Alexa.SkillBuilders.custom()
 
         GameStartIntentHandler,
         MoveIntentHandler,
+        FinishIntentHandler,
         TouchEventHandler,
         PageChangedEventHandler,
         HelpIntentHandler,

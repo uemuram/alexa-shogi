@@ -80,8 +80,8 @@ class CommonUtil {
     // スロットにインテント名 & スロット名に厳密にマッチしたかを判定する
     checkStrictSlotMatch(handlerInput, intentName, slotName) {
         // インテント名のチェック
-        if (!Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' ||
-            !Alexa.getIntentName(handlerInput.requestEnvelope) === intentName) {
+        if (Alexa.getRequestType(handlerInput.requestEnvelope) !== 'IntentRequest' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) !== intentName) {
             return false;
         }
         // スロットの取得ステータスをチェック
@@ -96,8 +96,8 @@ class CommonUtil {
     // 状態とインテントにマッチしたかを判定する
     checkIntentAndStateMatch(handlerInput, intentName, state) {
         // インテント名のチェック
-        if (!Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' ||
-            !Alexa.getIntentName(handlerInput.requestEnvelope) === intentName) {
+        if (Alexa.getRequestType(handlerInput.requestEnvelope) !== 'IntentRequest' ||
+            Alexa.getIntentName(handlerInput.requestEnvelope) !== intentName) {
             return false;
         }
         // 状態チェック

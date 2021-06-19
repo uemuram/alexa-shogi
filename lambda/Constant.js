@@ -14,7 +14,7 @@ class Constant {
         this.REQUEST_USER_MOVE = 1;         // ユーザ差し手受付中
         this.REQUEST_ALEXA_MOVE = 2;        // Alexa差し手受付中
 
-
+        
         // プレイヤー区分
         this.PLAYER_USER = 0;   // プレイヤー
         this.PLAYER_ALEXA = 1;  // Alexa
